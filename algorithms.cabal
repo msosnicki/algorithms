@@ -39,7 +39,56 @@ executable test-exe
 executable pairwise-exe
   hs-source-dirs:      app
   main-is:             Pairwise.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N -main-is Pairwise
+  ghc-options:         -main-is Pairwise
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+-- WEEK 2                       
+executable smallfib-exe
+  hs-source-dirs:      app/week2
+  main-is:             Smallfib.hs
+  ghc-options:         -O -main-is Smallfib
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+executable lastdigitfib-exe
+  hs-source-dirs:      app/week2
+  main-is:             Lastdigitfib.hs
+  ghc-options:         -O -main-is Lastdigitfib
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+executable gcd-exe
+  hs-source-dirs:      app/week2
+  main-is:             Gcd.hs
+  ghc-options:         -O -main-is Gcd
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+executable lcm-exe
+  hs-source-dirs:      app/week2
+  main-is:             Lcm.hs
+  ghc-options:         -O -main-is Lcm
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+executable fibmod-exe
+  hs-source-dirs:      app/week2
+  main-is:             FibLargeMod.hs
+  ghc-options:         -O -main-is FibLargeMod
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+executable sumfib-exe
+  hs-source-dirs:      app/week2
+  main-is:             SumFibs.hs
+  ghc-options:         -O -main-is SumFibs
   build-depends:       base
                      , algorithms
   default-language:    Haskell2010

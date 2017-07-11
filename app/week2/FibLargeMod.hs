@@ -11,33 +11,23 @@ main =
   nextNum >>= \m ->
   putStrLn $ show $ fibsModN n m
 
-fibsModN :: Integer -> Integer -> Integer
 fibsModN n m =
-  let p = (subseqAfter (drop 2 $ fibsMod m) ([0,1])) + 2
+  let p = pisanoPeriod m
       r = n `rem` p
   in fibsMod m !! fromInteger r
 
-subseqAfter :: (Eq a) => [a] -> [a] -> Integer
-subseqAfter l i
-  | startsWith l i = 0
-  | otherwise = 1 + subseqAfter (tail l) i
-
-startsWith :: (Eq a) => [a] -> [a] -> Bool
-startsWith _ [] = True
-startsWith [] _ = False
-startsWith (h1 : t1) (h2 : t2)
-  | h1 == h2 = startsWith t1 t2
-  | otherwise = False
+pisanoPeriod m =
+  let pp l acc = case l of
+        (0:1:_)    -> acc + 2
+        (_:0:t)    -> let acc' = 1 + acc in seq acc' $ pp (0:t) acc'
+        (h1:h2:t)  -> let acc' = 2 + acc in seq acc' $ pp t acc'
+  in pp (drop 2 $ fibsMod m) 0
 
 fibsMod m = map (`mod` m) fibs
 
-fibs :: [Integer]
 fibs  = scanl (+) 0 (1:fibs)
 
-nextNum :: (Integral a, Read a) => IO a
 nextNum = nextNum' ""
-
-nextNum' :: (Integral a, Read a) => String -> IO a
 nextNum' n = getChar >>= \char ->
   if(isDigit char) then nextNum' $ char:n
   else if(null n) then nextNum' n

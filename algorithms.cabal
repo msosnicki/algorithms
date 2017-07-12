@@ -93,6 +93,15 @@ executable sumfib-exe
                      , algorithms
   default-language:    Haskell2010
 
+executable partialsum-exe
+  hs-source-dirs:      app/week2
+  main-is:             PartialSum.hs
+  ghc-options:         -O -main-is PartialSum
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
+
 
 test-suite algorithms-test
   type:                exitcode-stdio-1.0

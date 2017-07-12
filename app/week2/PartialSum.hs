@@ -1,4 +1,4 @@
-module Lastdigitfib where
+module PartialSum where
 
 import Data.Char
 import Control.Applicative
@@ -7,8 +7,11 @@ import System.IO
 main :: IO ()
 main =
   hSetBuffering stdin NoBuffering >>= \_ ->
-  nextNum >>= \num ->
-  putStrLn $ show $ lastDigitOfSum (num + 1)
+  nextNum >>= \from ->
+  nextNum >>= \to ->
+  let sumAll = lastDigitOfSum $ to + 1
+      sumInit = lastDigitOfSum from
+  in putStrLn $ show $ (sumAll - sumInit) `mod` 10
 
 lastDigitOfSum n =
   let pp = pisanoPeriod 10
@@ -16,7 +19,7 @@ lastDigitOfSum n =
       r = n `rem` pp
       sum1 = (s*) $ sum $ take pp fibsMod10
       sum2 = sum $ take r fibsMod10
-  in (`mod` 10) $ sum1 + sum2
+  in sum1 + sum2
 
 pisanoPeriod m =
   let pp l acc = case l of

@@ -15,8 +15,6 @@ fibs  =
   let fibs' = scanl (+) 0 (1:fibs')
   in map (`mod` 10) fibs'
 
-
-
 nextNum :: (Integral a, Read a) => IO a
 nextNum = nextNum' ""
 

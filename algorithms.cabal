@@ -109,6 +109,14 @@ executable week3problem2-exe
                      , algorithms
   default-language:    Haskell2010
 
+executable week3problem3-exe
+  hs-source-dirs:      app/week3
+  main-is:             Problem3.hs
+  ghc-options:         -O -main-is Problem3
+  build-depends:       base
+                     , algorithms
+  default-language:    Haskell2010
+
 
 
 test-suite algorithms-test

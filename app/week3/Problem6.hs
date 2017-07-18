@@ -1,9 +1,10 @@
-module Problem4 where
+module Problem6 where
 
 import Data.Char
 import Data.List
 import Data.Maybe
 import Control.Applicative
+import Control.Monad
 import System.IO
 
 -- Given two sequences a1, a2.. an (ai is the profit per click of the i-th ad) and b1, b2, . . . , bn (bi is
@@ -14,32 +15,15 @@ main :: IO ()
 main =
   hSetBuffering stdin NoBuffering >>= \_ ->
   nextNum >>= \n ->
-  allHours n >>= \h ->
-  let solved = solve h
-      size = length solved
-      print' = intercalate " " . map show
-  in  (putStrLn $ show size) >>= \_ ->
-      putStrLn $ print' solved
+  nextNums n >>= \nums ->
+  putStrLn $ show $ solve nums 
 
-solve :: (Ord a) => [(a, a)] -> [a]
-solve =
-  let f [] (start, end) = end : []
-      f acc@(h:_) (start, end)
-        | start <= h = acc
-        | otherwise = end : acc
-  in (foldl' f []) . (sortBy hourOrder)
-
-allHours n = sequence $ take n $ repeat nextHours
-
-hourOrder (f1, t1) (f2, t2)
-  | t1 > t2 = GT
-  | t1 < t2 = LT
-  | t1 == t2 = compare f1 f2
-
-nextHours = fmap (tuplify . sort) $ nextNums 2
-
-tuplify :: [a] -> (a, a)
-tuplify [a, b] = (a, b)
+solve :: [Integer] -> Integer
+solve nums =
+  let strings = join $ map show nums
+      digits = map (\s -> read $ s : []) strings
+      getDigit num a = num * 10 + a
+  in foldl' getDigit 0 $ sortBy (flip compare) digits
 
 nextNums :: (Integral a, Read a) => Int -> IO [a]
 nextNums n = sequence $ take n $ repeat nextNum

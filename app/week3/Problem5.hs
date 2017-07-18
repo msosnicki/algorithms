@@ -1,4 +1,4 @@
-module Problem4 where
+module Problem5 where
 
 import Data.Char
 import Data.List
@@ -14,35 +14,15 @@ main :: IO ()
 main =
   hSetBuffering stdin NoBuffering >>= \_ ->
   nextNum >>= \n ->
-  allHours n >>= \h ->
-  let solved = solve h
+  let solved = consUpTo 1 n
       size = length solved
       print' = intercalate " " . map show
-  in  (putStrLn $ show size) >>= \_ ->
-      putStrLn $ print' solved
+  in (putStrLn $ show size) >>= \_ ->
+     putStrLn $ print' solved
 
-solve :: (Ord a) => [(a, a)] -> [a]
-solve =
-  let f [] (start, end) = end : []
-      f acc@(h:_) (start, end)
-        | start <= h = acc
-        | otherwise = end : acc
-  in (foldl' f []) . (sortBy hourOrder)
-
-allHours n = sequence $ take n $ repeat nextHours
-
-hourOrder (f1, t1) (f2, t2)
-  | t1 > t2 = GT
-  | t1 < t2 = LT
-  | t1 == t2 = compare f1 f2
-
-nextHours = fmap (tuplify . sort) $ nextNums 2
-
-tuplify :: [a] -> (a, a)
-tuplify [a, b] = (a, b)
-
-nextNums :: (Integral a, Read a) => Int -> IO [a]
-nextNums n = sequence $ take n $ repeat nextNum
+consUpTo lb up
+  | (2*lb) + 1 > up = up : []
+  | otherwise = lb : consUpTo (lb + 1) (up - lb)
 
 nextNum :: (Integral a, Read a) => IO a
 nextNum = nextNum' ""

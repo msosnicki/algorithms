@@ -22,25 +22,33 @@ solve nums = toNum $ reverse $ sortBy order nums
 toNum :: (Integral a, Show a) => [a] -> a
 toNum = foldl' f 0
   where f acc elem =
-          let n = (10^) $ (1+) $ pow elem
+          let n = (10*) $ pow elem
           in acc * n + elem
 
 order :: Integer -> Integer -> Ordering
-order a b
-  | a == b = EQ
-  | ah == bh = (fromMaybe ah at) `order` (fromMaybe bh bt)
-  | otherwise = compare ah bh
-  where (ah, at) = mostImportant a
-        (bh, bt) = mostImportant b
+order a b = compare ab ba
+  where as = show a
+        bs = show b
+        read' = read :: (String -> Integer)
+        ab = read' $ (as ++ bs)
+        ba = read' $ (bs ++ as)
+
+-- order :: Integer -> Integer -> Ordering
+-- order a b
+--   | a == b = EQ
+--   | ah == bh = (fromMaybe ah at) `order` (fromMaybe bh bt)
+--   | otherwise = compare ah bh
+--   where (ah, at) = mostImportant a
+--         (bh, bt) = mostImportant b
 
 mostImportant :: Integer -> (Integer, Maybe Integer)
-mostImportant num =
-  let n = pow num
-      (m, r) = divMod num $ 10^n
-  in (m, if(r == 0) then Nothing else Just r)
+mostImportant num
+  | num < 10 = (num, Nothing)
+  | otherwise = (m, Just r)
+  where (m, r) = divMod num $ pow num
 
-pow num = (-1+) $ length $ show num
-  
+pow num = (10^) $ (-1+) $ length $ show num
+
 nextNums :: (Integral a, Read a) => Int -> IO [a]
 nextNums n = sequence $ take n $ repeat nextNum
 

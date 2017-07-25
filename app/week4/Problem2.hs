@@ -17,37 +17,42 @@ main =
   hSetBuffering stdin NoBuffering >>= \_ ->
   nextNum >>= \n ->
   nextNums n >>= \nums ->
-  putStrLn "tete"
+  putStrLn $ show $ majority nums
 
 
-majority :: (Eq a) => S.Seq a -> Maybe Int
-majority s = majority' s 0 (S.length s)
+majority :: (Eq a) => S.Seq a -> Int
+majority s =
+  let majorityElement = majority' s 0 (S.length s)
+  in if(isJust majorityElement) then 1 else 0
 
-majority' :: (Eq a) => S.Seq a -> Int -> Int -> Maybe Int
+majority' :: (Eq a) => S.Seq a -> Int -> Int -> Maybe a
 majority' s from to
-  | from >= to = Nothing
-  | from + 1 == to = Just from
+  | span == 0 = Nothing
+  | span == 1 = Just $ S.index s from
   | otherwise = 
-      let span = to - from
-          mid = (from +) $ span `div` 2 
-          majL = majority' s from mid
-          majR = majority' s mid to
-          sub = subseq from to s
-          pred = \elem -> elem > (span `div` 2)
-          cl = filterM pred $ fmap (count sub) majL
-          cr = filterM pred $ fmap (count sub) majR
-      in 
+      let ml = majority' s from mid
+          mr = majority' s mid to
+          cl = fmap (count s from to) ml
+          cr = fmap (count s from to) mr
+          gl = gtOpt cl $ span `div` 2
+          gr = gtOpt cr $ span `div` 2
+      in (gl >> ml) <|> (gr >> mr)
+  where
+    span = to - from
+    mid = (from +) $ span `div` 2
+
+gtOpt o n = o >>= \v -> if(v>n) then Just v else Nothing
 
 subseq from to s = S.drop from $ S.take to s
 
 filterM pred m = m >>= \v -> if(pred v) then pure m else Nothing
 
-count :: (Eq a) => S.Seq a -> Int -> Int
-count seq i =
-  let element = S.index seq i
-  in F.foldl' (\acc -> \e -> if(e == element) then acc + 1 else acc) 0 seq
+count :: (Eq a) => S.Seq a -> Int -> Int -> a -> Int
+count seq from to element =
+  let sub = subseq from to seq
+  in F.foldl' (\acc -> \e -> if(e == element) then acc + 1 else acc) 0 sub
 
-nextNums n = T.sequence $ replicate n nextNum
+nextNums n = T.sequence $ S.replicate n nextNum
 
 nextNum :: (Integral a, Read a) => IO a
 nextNum = nextNum' ""

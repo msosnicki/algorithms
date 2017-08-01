@@ -180,6 +180,27 @@ executable week4problem4-exe
                      , containers >= 0.5.5.1
   default-language:    Haskell2010
 
+executable week4problem5-exe
+  hs-source-dirs:      app/week4
+  main-is:             Problem5.hs
+  ghc-options:         -O -main-is Problem5
+  build-depends:       algorithms
+                     , base
+                     , containers >= 0.5.5.1
+  default-language:    Haskell2010
+
+
+executable week4problem6-exe
+  hs-source-dirs:      app/week4
+  main-is:             Problem6.hs
+  ghc-options:         -O -main-is Problem6
+  build-depends:       algorithms
+                     , base
+                     , containers >= 0.5.5.1
+                     , mtl
+  default-language:    Haskell2010
+
+
 test-suite algorithms-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test

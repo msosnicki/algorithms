@@ -3,6 +3,7 @@ module Problem5 where
 
 import Data.Char
 import Data.List
+import Data.Map(fromList, (!))
 import Control.Applicative
 import System.IO
 
@@ -16,7 +17,8 @@ main =
   nextNum >>= \p ->
   nextRanges r >>= \ranges ->
   nextNums p >>= \points ->
-  putStrLn $ printable $ solve ranges points
+  let solved = fromList $ solve ranges points
+  in putStrLn $ printable $ (solved !) <$> points
 
 printable l = intercalate " " $ map show l
 

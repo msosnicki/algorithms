@@ -1,9 +1,11 @@
+{-# LANGUAGE TupleSections #-}
 module Problem1 where
 
 import Data.Char
 import Data.List
 import Data.Array
 import Data.Maybe
+import Data.Ord
 import Control.Applicative
 import System.IO
 
@@ -13,27 +15,39 @@ main :: IO ()
 main =
   hSetBuffering stdin NoBuffering >>= \_ ->
   nextNum >>= \n ->
-  let result = solve n
-      printSize = putStrLn $ show $ length result - 1
-      printList = putStrLn $ intercalate " " (show <$> result)
-  in printSize >>= \_ -> printList
-  
+  let (count, solution) = solve n
+      printSize = putStrLn $ show count
+      printList = putStrLn $ intercalate " " $ show <$> solution
+  in printSize >> printList
 
-solve :: Integer -> [Integer]
-solve n = reverse $ solution ! n
+solve :: Int -> (Int, [Int])
+solve n = (count lastCell, reconstruct solution n)
   where
-    solution = array (1, n) $ (1, [1]) : [
-      (i, (op $ fromJust index) : (fromJust acc)) | i <- [2..n],
-        let solutions = sol i solution <$> ops
-            sorted = sortBy sorting solutions
-            (op, index, acc) = head sorted
+    lastCell = solution ! n
+    solution = array (1, n) $ (1, Cell 0 1 0) : [
+      (i, best) | i <- [2..n],
+        let prevCells = catMaybes $ prevCellsF i solution <$> ops
+            (bestCell, bestIndex, op) = head $ sortBy (comparing (count . fst3)) prevCells
+            best = Cell bestIndex (function op $ value bestCell) (count bestCell + 1)
       ]
 
-sorting (_, _, Nothing) (_, _, l2) = GT
-sorting (_, _, l1) (_, _, Nothing) = LT
-sorting (_, _, Just l1) (_, _, Just l2) = compare (length l1) (length l2)
+reconstruct arr n = loop n []
+  where loop i acc =
+          let Cell prev value _ = arr ! i
+          in if (prev==0) then value : acc else loop prev (value : acc)
 
-data Op = Op {function :: Integer -> Integer, inverse :: Integer -> Maybe Integer}
+fst3 (e, _, _) = e
+
+prevCellsF i arr op = (\i -> (arr ! i, i, op)) <$> index
+  where index = inverse op i
+
+prevCellsF2 i arr op = (, op) <$> prev
+  where inv = inverse op i
+        prev = (arr !) <$> inv
+        
+data Op = Op {function :: Int -> Int, inverse :: Int -> Maybe Int}
+
+data Cell = Cell {prev :: Int, value :: Int, count :: Int} deriving Show
 
 ops = [
   Op (+1) (Just . (subtract 1)),
@@ -41,15 +55,11 @@ ops = [
   Op (*2) (invMul 2)
       ]
 
-sol num arr op =
-  let i = inverse op num
-  in (function op, i, (arr !) <$> i)
-
 invMul times = f
   where f num =
           let (d, r) = num `divMod` times
           in if(r == 0) then Just d else Nothing
-  
+
 
 nextNums :: (Integral a, Read a) => Int -> IO [a]
 nextNums n = sequence $ replicate n nextNum

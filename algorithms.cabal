@@ -220,6 +220,16 @@ executable week5problem2-exe
                      , containers >= 0.5.5.1
   default-language:    Haskell2010
 
+executable week5problem3-exe
+  hs-source-dirs:      app/week5
+  main-is:             Problem3.hs
+  ghc-options:         -O -main-is Problem3
+  build-depends:       algorithms
+                     , array >= 0.5.0.0
+                     , base
+                     , containers >= 0.5.5.1
+  default-language:    Haskell2010
+
 
 test-suite algorithms-test
   type:                exitcode-stdio-1.0
